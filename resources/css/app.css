@@ -1,0 +1,80 @@
+@import 'tailwindcss';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+/* Tailwind entry (keeps working if tailwind is functional) */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------- FALLBACK / UTILITY CLASSES (works if Tailwind isn't loading) ---------- */
+/* gold color variable */
+:root {
+  --geb-gold: #D4AF37;
+  --geb-black: #0b0b0b;
+  --geb-black-80: rgba(11,11,11,0.8);
+  --geb-blur-bg: rgba(0,0,0,0.35);
+}
+
+/* fallback text color */
+.text-gold {
+  color: var(--geb-gold) !important;
+}
+
+/* background gold */
+.bg-gold {
+  background: var(--geb-gold) !important;
+  color: #000 !important;
+}
+
+/* blurred navbar container */
+.geb-navbar-blur {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  background: linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.15));
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+@keyframes zoom-bg {
+  from { transform: scale(1); }
+  to { transform: scale(1.05); }
+}
+
+.bg-zoom {
+  animation: zoom-bg 20s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  0%, 100% { text-shadow: 0 0 5px #facc15, 0 0 10px #facc15, 0 0 15px #facc15; }
+  50% { text-shadow: 0 0 10px #facc15, 0 0 20px #facc15, 0 0 30px #facc15; }
+}
+
+
+
+/* simple layout helpers (for when Tailwind is missing) */
+.geb-container { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+.geb-flex { display:flex; align-items:center; justify-content:space-between; }
+.geb-center { display:flex; align-items:center; gap:12px; }
+.geb-btn { padding:8px 14px; border-radius:8px; cursor:pointer; border:1px solid rgba(255,255,255,0.06); background:transparent; }
+.geb-hero { min-height:60vh; display:flex; align-items:center; justify-content:center; background-size:cover; background-position:center; }
+.geb-card { padding:18px; border-radius:12px; background: rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.04); }
+.geb-grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+@media (max-width:768px){ .geb-grid-2 { grid-template-columns: 1fr; } .geb-flex{flex-direction:row} }
+
