@@ -61,6 +61,13 @@ export default function ProductsGrid() {
         setShowAll(false);
     };
 
+    const handleInquireClick = () => {
+        const contactSection = document.getElementById('contact');
+        if (contactSection) {
+            contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    };
+
     const displayedProducts = showAll ? products : products.slice(0, 6);
 
     return (
@@ -126,12 +133,12 @@ export default function ProductsGrid() {
                                     <p className="text-white/70 text-sm mt-2">{p.description}</p>
 
                                     <div className="flex items-center justify-between mt-4">
-                                        <span className="cursor-pointer text-yellow-500 hover:underline">Learn more</span>
-                                        {/* <div className="flex items-center gap-1">
-                                            <Stars rating={p.rating || 0} />
-                                            <span className="text-xs text-white/60">({p.reviews || 0})</span>
-                                        </div> */}
-                                        {/* <span className="text-lg font-bold">${parseFloat(p.price).toFixed(2)}</span> */}
+                                        <button
+                                            onClick={handleInquireClick}
+                                            className="cursor-pointer text-yellow-500 hover:underline hover:text-yellow-400 transition-colors duration-200"
+                                        >
+                                            Inquire Now
+                                        </button>
                                     </div>
                                 </div>
                             </div>

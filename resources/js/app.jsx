@@ -11,6 +11,7 @@ import ContactCardAndForm from "./components/ContactCardAndForm";
 import ProductsGrid from "./components/ProductsGrid";
 
 import PrismBackground from "./components/PrismBackground";  // ✅ ADD THIS
+import WhyChooseUs from "./components/WhyChooseUs";
 
 
 
@@ -142,6 +143,7 @@ function App() {
                     <Carousel />
                     <ProductsGrid/>
                     <Services />
+                    <WhyChooseUs/>
                     <About />
                     {/* <Specialization /> */}
                     <ContactCardAndForm />

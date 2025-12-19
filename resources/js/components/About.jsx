@@ -32,11 +32,7 @@ export default function About() {
           {/* Right Text */}
           <div className="flex-1 text-white/80 text-lg leading-relaxed">
             <p>
-              Our manufacturing journey began decades ago, shaped by strong
-              international collaborations that helped define our values of
-              integrity, precision, and innovation. Today, GE&B delivers
-              high-performance Tactical Gear, Protective Wear, Sportswear, and
-              Premium Apparel across Australia and beyond.
+              GE&B was created with one simple goal: to provide Australian businesses with exceptional uniforms without the usual compromises. Built on a strong personal partnership with a leading manufacturer in Pakistan, we combine international craftsmanship with Australian service and reliability.
             </p>
 
             <p className="mt-4">
@@ -45,22 +41,20 @@ export default function About() {
             </p>
 
             <ul className="mt-4 space-y-2 text-lg text-white/90 ml-5 list-disc">
-              <li><strong>T</strong>: Top-Tier Manufacturing Services</li>
-              <li><strong>Q</strong>: Quality with Consistency</li>
-              <li><strong>M</strong>: Modern, Innovative Management</li>
-              <li><strong>S</strong>: Sustainable, Eco-Friendly Production</li>
+              <li>Top-Tier Manufacturing Services</li>
+              <li>Quality with Consistency</li>
+              <li>Modern, Innovative Management</li>
+              <li>Sustainable, Eco-Friendly Production</li>
             </ul>
           </div>
         </div>
 
         {/* Mission */}
         <div className="mt-12">
-          <h3 className="text-2xl font-semibold">Our Mission</h3>
+          <h3 className="text-2xl font-semibold">Our Supplier</h3>
           <p className="text-white/80 mt-3 leading-relaxed text-lg">
-            To deliver premium-grade tactical and sportswear manufacturing
-            solutions with unmatched quality, consistency, and customization —
-            empowering brands, athletes, and industries with durable,
-            performance-ready products designed for real-world use.
+            Our manufacturing partner has decades of experience producing high-performance apparel for global markets. This gives us access to premium materials, advanced production methods, and strict quality assurance — all while maintaining fair and competitive pricing.
+
           </p>
         </div>
 
@@ -68,11 +62,14 @@ export default function About() {
         <div className="mt-10">
           <h3 className="text-2xl font-semibold">Our Vision</h3>
           <p className="text-white/80 mt-3 leading-relaxed text-lg">
-            To become a global benchmark in Tactical Gear, Protective Wear,
-            and Sportswear manufacturing — leveraging technology, craftsmanship,
-            and long-term partnerships built on value, integrity, and mutual
-            growth.
+            At GE&B, we treat every order like a long-term relationship. We work closely with our clients to understand their operational needs, design preferences, and branding requirements. From security apparel to specialty uniforms, every product is crafted with care and delivered with confidence.
           </p>
+        </div>
+
+        <div className="mt-10">
+          <h3 className="text-2xl font-semibold">Our Promise</h3>
+          <p className="text-white/80 mt-3 leading-relaxed text-lg">
+            Quality you can feel. Reliability you can trust. Service you will appreciate.          </p>
         </div>
 
       </div>
