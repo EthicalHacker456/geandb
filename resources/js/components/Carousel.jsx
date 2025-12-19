@@ -10,9 +10,9 @@ import "swiper/css";
 const slides = [
     {
         id: 1,
-        title: "White Dress Shirt",
-        subtitle: "Premium uniform shirt for security and corporate teams",
-        image: "/images/person_white.png", // replace with your own image
+        title: "Security Vest",
+        subtitle: "Reliable protective vest for leading security companies",
+        image: "/images/person_vest.png",
     },
     {
         id: 2,
@@ -22,10 +22,12 @@ const slides = [
     },
     {
         id: 3,
-        title: "Security Vest",
-        subtitle: "Reliable protective vest for leading security companies",
-        image: "/images/person_vest.png",
+        title: "White Dress Shirt",
+        subtitle: "Premium uniform shirt for security and corporate teams",
+        image: "/images/person_white.png", // replace with your own image
     },
+    
+    
 ];
 
 
