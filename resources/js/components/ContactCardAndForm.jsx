@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
-import { Send } from "lucide-react";
+import { Send, Mail, Phone, MapPin, Clock, CheckCircle, XCircle, Loader } from "lucide-react";
 
 export default function ContactCardAndForm() {
   const [form, setForm] = useState({
@@ -20,146 +19,303 @@ export default function ContactCardAndForm() {
     setStatus("sending");
 
     try {
-      await axios.post("/contact", form);
-      setStatus("sent");
-      setForm({ name: "", email: "", phone: "", message: "" });
+      // Get CSRF token from meta tag or cookie
+      let csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+      
+      // If not in meta tag, try to get from cookie
+      if (!csrfToken) {
+        const cookies = document.cookie.split(';');
+        const xsrfCookie = cookies.find(c => c.trim().startsWith('XSRF-TOKEN='));
+        if (xsrfCookie) {
+          csrfToken = decodeURIComponent(xsrfCookie.split('=')[1]);
+        }
+      }
+      
+      const response = await fetch("/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": csrfToken || "",
+          "X-XSRF-TOKEN": csrfToken || "",
+          "Accept": "application/json",
+        },
+        credentials: 'same-origin',
+        body: JSON.stringify(form),
+      });
+
+      if (response.ok) {
+        setStatus("sent");
+        setForm({ name: "", email: "", phone: "", message: "" });
+        setTimeout(() => setStatus(null), 5000);
+      } else {
+        console.error('Response error:', response.status, response.statusText);
+        setStatus("error");
+        setTimeout(() => setStatus(null), 5000);
+      }
     } catch (err) {
-      console.error(err);
+      console.error('Fetch error:', err);
       setStatus("error");
+      setTimeout(() => setStatus(null), 5000);
     }
   };
 
+  const contactInfo = [
+    {
+      icon: Phone,
+      label: "Phone",
+      value: "+61 413 315 153",
+      href: "tel:+61413315153",
+      gradient: "from-green-500/20 to-emerald-500/20"
+    },
+    {
+      icon: Mail,
+      label: "Email",
+      value: "Info@genb.com.au",
+      href: "mailto:Info@genb.com.au",
+      gradient: "from-blue-500/20 to-cyan-500/20"
+    },
+    {
+      icon: MapPin,
+      label: "Location",
+      value: "Sydney, Australia",
+      gradient: "from-purple-500/20 to-pink-500/20"
+    }
+  ];
+
   return (
-    <section id="contact" className="max-w-7xl mx-auto px-3 py-20">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+    <section id="contact" className="max-w-7xl mx-auto px-4 py-20">
+      
+      {/* Section Header */}
+      <div className="text-center mb-16">
+        <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent">
+          Get In Touch
+        </h2>
+        <div className="w-24 h-1 bg-gradient-to-r from-yellow-400 to-yellow-600 mx-auto rounded-full mb-6" />
+        <p className="text-white/60 text-lg max-w-2xl mx-auto">
+          Ready to elevate your team's appearance? Let's discuss your uniform needs.
+        </p>
+      </div>
 
-        {/* LEFT FORM */}
-        <form
-          onSubmit={submit}
-          className="p-10 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 shadow-lg"
-        >
-          <h3 className="text-white text-3xl font-semibold mb-8">
-            Contact GE&B
-          </h3>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-          <input
-            name="name"
-            value={form.name}
-            onChange={handle}
-            placeholder="Your Name"
-            required
-            className="w-full p-4 mt-4 rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-white/30 transition"
-          />
+        {/* LEFT: CONTACT FORM */}
+        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 md:p-10 shadow-2xl">
+          <div className="flex items-center gap-3 mb-8">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border border-yellow-400/30 flex items-center justify-center">
+              <Send className="text-yellow-400 w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="text-white text-2xl font-bold">Send Message</h3>
+              <p className="text-white/60 text-sm">We'll respond within 24 hours</p>
+            </div>
+          </div>
 
-          <input
-            name="email"
-            value={form.email}
-            onChange={handle}
-            placeholder="Your Email"
-            required
-            className="w-full p-4 mt-4 rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-white/30 transition"
-          />
+          <div className="space-y-4">
+            {/* Name Input */}
+            <div className="group">
+              <label className="block text-white/80 text-sm font-medium mb-2">
+                Full Name *
+              </label>
+              <input
+                name="name"
+                value={form.name}
+                onChange={handle}
+                placeholder="John Smith"
+                required
+                className="w-full p-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/40 
+                         focus:outline-none focus:border-yellow-400/50 focus:bg-white/10 
+                         transition-all duration-300"
+              />
+            </div>
 
-          <input
-            name="phone"
-            value={form.phone}
-            onChange={handle}
-            placeholder="Phone Number"
-            className="w-full p-4 mt-4 rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-white/30 transition"
-          />
+            {/* Email Input */}
+            <div className="group">
+              <label className="block text-white/80 text-sm font-medium mb-2">
+                Email Address *
+              </label>
+              <input
+                name="email"
+                type="email"
+                value={form.email}
+                onChange={handle}
+                placeholder="john@company.com"
+                required
+                className="w-full p-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/40 
+                         focus:outline-none focus:border-yellow-400/50 focus:bg-white/10 
+                         transition-all duration-300"
+              />
+            </div>
 
-          <textarea
-            name="message"
-            value={form.message}
-            onChange={handle}
-            rows="5"
-            placeholder="Your Message"
-            required
-            className="w-full p-4 mt-4 rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-white/30 transition"
-          />
+            {/* Phone Input */}
+            <div className="group">
+              <label className="block text-white/80 text-sm font-medium mb-2">
+                Phone Number
+              </label>
+              <input
+                name="phone"
+                type="tel"
+                value={form.phone}
+                onChange={handle}
+                placeholder="+61 4XX XXX XXX"
+                className="w-full p-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/40 
+                         focus:outline-none focus:border-yellow-400/50 focus:bg-white/10 
+                         transition-all duration-300"
+              />
+            </div>
 
-          <div className="mt-6 flex items-center">
+            {/* Message Textarea */}
+            <div className="group">
+              <label className="block text-white/80 text-sm font-medium mb-2">
+                Your Message *
+              </label>
+              <textarea
+                name="message"
+                value={form.message}
+                onChange={handle}
+                rows={5}
+                placeholder="Tell us about your uniform requirements..."
+                required
+                className="w-full p-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/40 
+                         focus:outline-none focus:border-yellow-400/50 focus:bg-white/10 
+                         transition-all duration-300 resize-none"
+              />
+            </div>
+
+            {/* Submit Button */}
             <button
-              type="submit"
+              type="button"
+              onClick={submit}
               disabled={status === "sending"}
-              className="
-                group relative overflow-hidden
-                bg-gradient-to-br from-amber-400/80 via-yellow-300/70 to-orange-400/80
-                backdrop-blur-xl
-                px-8 py-4 rounded-2xl
-                text-white font-semibold text-lg
-                border border-white/30
-                shadow-[0_8px_32px_0_rgba(251,191,36,0.35),inset_0_1px_0_0_rgba(255,255,255,0.5)]
-                transition-all duration-500
-                hover:shadow-[0_8px_40px_0_rgba(251,191,36,0.5),inset_0_1px_0_0_rgba(255,255,255,0.6)]
-                hover:scale-[1.02]
-                hover:border-white/40
-                disabled:opacity-70 disabled:cursor-not-allowed
-                flex items-center gap-2
-                before:absolute before:inset-0 
-                before:bg-gradient-to-br before:from-white/40 before:via-transparent before:to-transparent
-                before:rounded-2xl before:opacity-0 before:transition-opacity before:duration-500
-                hover:before:opacity-100
-              "
+              className="w-full px-8 py-4 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 
+                       text-white font-semibold rounded-xl transition-all duration-300 
+                       hover:shadow-lg hover:shadow-yellow-500/50 hover:scale-[1.02] active:scale-95
+                       disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100
+                       flex items-center justify-center gap-3"
             >
-              {/* Glass reflection */}
-              <span className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 to-transparent rounded-t-2xl"></span>
-              
-              {/* Animated shimmer */}
-              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000 skew-x-12"></span>
-              
-              <span className="relative z-10 drop-shadow-sm">Send Message</span>
-              <Send className="relative z-10 w-5 h-5 group-hover:translate-x-1 transition-transform duration-300 drop-shadow-sm" />
+              {status === "sending" ? (
+                <>
+                  <Loader className="w-5 h-5 animate-spin" />
+                  Sending Message...
+                </>
+              ) : (
+                <>
+                  <Send className="w-5 h-5" />
+                  Send Message
+                </>
+              )}
             </button>
 
-            {status === "sending" && (
-              <span className="ml-4 text-white/80 animate-pulse">Sending...</span>
-            )}
+            {/* Status Messages */}
             {status === "sent" && (
-              <span className="ml-4 text-green-300 font-semibold">✓ Sent Successfully!</span>
+              <div className="flex items-center gap-3 p-4 bg-green-500/20 border border-green-400/30 rounded-xl animate-fadeIn">
+                <CheckCircle className="text-green-400 w-5 h-5 flex-shrink-0" />
+                <p className="text-green-300 font-medium">Message sent successfully! We'll be in touch soon.</p>
+              </div>
             )}
+
             {status === "error" && (
-              <span className="ml-4 text-red-400 font-semibold">✗ Error sending</span>
+              <div className="flex items-center gap-3 p-4 bg-red-500/20 border border-red-400/30 rounded-xl animate-fadeIn">
+                <XCircle className="text-red-400 w-5 h-5 flex-shrink-0" />
+                <p className="text-red-300 font-medium">Failed to send message. Please try again.</p>
+              </div>
             )}
           </div>
-        </form>
+        </div>
 
-        {/* RIGHT OWNER CARD */}
-        <aside className="p-10 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 shadow-lg">
-          <p className="text-white/90 mt-4 text-xl font-medium">
-            Gohar Ejaz
-          </p>
+        {/* RIGHT: CONTACT INFO */}
+        <div className="space-y-8">
+          
+          {/* Owner Card */}
+          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 md:p-10 shadow-2xl">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center text-white text-2xl font-bold">
+                GE
+              </div>
+              <div>
+                <h3 className="text-white text-2xl font-bold">Gohar Ejaz</h3>
+                <p className="text-white/60">Founder & Director</p>
+              </div>
+            </div>
 
-          <div className="mt-6 space-y-3 text-white/80 text-lg">
-            <p>
-              <span className="text-white font-semibold">Phone:</span> +61 413 315 153
+            <p className="text-white/80 text-base leading-relaxed mb-6">
+              Direct contact with the owner ensures personalized service and attention to every detail of your order.
             </p>
-            <p>
-              <span className="text-white font-semibold">Email:</span> Info@genb.com.au
-            </p>
+
+            {/* Contact Info Cards */}
+            <div className="space-y-3">
+              {contactInfo.map((info, index) => {
+                const Icon = info.icon;
+                return (
+                  <a
+                    key={index}
+                    href={info.href || '#'}
+                    className={`
+                      group flex items-center gap-4 p-4 rounded-xl
+                      bg-gradient-to-br ${info.gradient}
+                      border border-white/10 backdrop-blur-sm
+                      hover:border-white/20 hover:scale-[1.02]
+                      transition-all duration-300
+                      ${info.href ? 'cursor-pointer' : 'cursor-default'}
+                    `}
+                  >
+                    <div className="w-10 h-10 rounded-lg bg-white/10 backdrop-blur-sm flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                      <Icon className="text-white w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="text-white/60 text-xs font-medium">{info.label}</p>
+                      <p className="text-white font-semibold">{info.value}</p>
+                    </div>
+                  </a>
+                );
+              })}
+            </div>
           </div>
 
-          <p className="mt-8 text-white/60 text-base">
-            Based in Australia — Shipping Across the Country.  
-          </p>
-
-          {/* Inspirational Quote Section */}
-          {/* <div className="mt-10 pt-8 border-t border-white/10">
-            <div className="bg-gradient-to-br from-white/10 to-white/5 rounded-xl p-6 border border-white/10">
-              <p className="text-white/90 text-lg italic leading-relaxed">
-                "Quality is not an act, it is a habit. We don't just supply uniforms — we build lasting partnerships founded on trust, excellence, and unwavering commitment to your success."
-              </p>
-              <p className="text-white/60 text-sm mt-4 text-right">
-                — Gohar Ejaz
-              </p>
+          {/* Business Hours Card */}
+          <div className="bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-yellow-500/20 border border-yellow-400/30 flex items-center justify-center">
+                <Clock className="text-yellow-400 w-5 h-5" />
+              </div>
+              <h4 className="text-white text-xl font-bold">Business Hours</h4>
             </div>
-          </div> */}
 
-          {/* <p className="mt-6 text-white/70 text-base leading-relaxed">
-            From our family to yours, we're dedicated to delivering uniforms that empower your team and reflect the pride of your organization.
-          </p> */}
-        </aside>
+            <div className="space-y-3 text-white/80">
+              <div className="flex justify-between items-center">
+                <span>Monday - Friday</span>
+                <span className="font-semibold text-white">9:00 AM - 6:00 PM</span>
+              </div>
+              <div className="w-full h-px bg-white/10" />
+              <div className="flex justify-between items-center">
+                <span>Saturday</span>
+                <span className="font-semibold text-white">10:00 AM - 4:00 PM</span>
+              </div>
+              <div className="w-full h-px bg-white/10" />
+              <div className="flex justify-between items-center">
+                <span>Sunday</span>
+                <span className="font-semibold text-red-400">Closed</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
+
+      <style>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.3s ease-out;
+        }
+      `}</style>
     </section>
   );
 }
